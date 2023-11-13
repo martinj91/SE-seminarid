@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)https://moodle.ut.ee/pluginfile.php/1062787/mod_assign/intro/index.html -->
+<html lang="ee">
+    
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Anki flashcards</title>
+<script data-name="TokenSigning">(function() {
+    // Promises
+    var _eid_promises = {};
+    // Turn the incoming message from extension
+    // into pending Promise resolving
+    window.addEventListener("message", function(event) {
+        if (event.source !== window) return;
+        if (event.data.src && (event.data.src === "background.js")) {
+            console.log("Page received: ");
+            console.log(event.data);
+            // Get the promise
+            if (event.data.nonce) {
+                var p = _eid_promises[event.data.nonce];
+                // resolve
+                if (event.data.result === "ok") {
+                    if (event.data.signature !== undefined) {
+                        p.resolve({hex: event.data.signature});
+                    } else if (event.data.version !== undefined) {
+                        p.resolve(event.data.extension + "/" + event.data.version);
+                    } else if (event.data.cert !== undefined) {
+                        p.resolve({hex: event.data.cert});
+                    } else {
+                        console.log("No idea how to handle message");
+                        console.log(event.data);
+                    }
+                } else {
+                    // reject
+                    p.reject(new Error(event.data.result));
+                }
+                delete _eid_promises[event.data.nonce];
+            } else {
+                console.log("No nonce in event msg");
+            }
+        }
+    }, false);
+
+    window.TokenSigning = function() {
+        function nonce() {
+            var val = "";
+            var hex = "abcdefghijklmnopqrstuvwxyz0123456789";
+            for (var i = 0; i < 16; i++) val += hex.charAt(Math.floor(Math.random() * hex.length));
+            return val;
+        }
+
+        function messagePromise(msg) {
+            return new Promise(function(resolve, reject) {
+                // amend with necessary metadata
+                msg["nonce"] = nonce();
+                msg["src"] = "page.js";
+                // send message
+                window.postMessage(msg, "*");
+                // and store promise callbacks
+                _eid_promises[msg.nonce] = {
+                    resolve: resolve,
+                    reject: reject
+                };
+            });
+        }
+        this.getCertificate = function(options) {
+            var msg = {type: "CERT", lang: options.lang, filter: options.filter};
+            console.log("getCertificate()");
+            return messagePromise(msg);
+        };
+        this.sign = function(cert, hash, options) {
+            var msg = {type: "SIGN", cert: cert.hex, hash: hash.hex, hashtype: hash.type, lang: options.lang, info: options.info};
+            console.log("sign()");
+            return messagePromise(msg);
+        };
+        this.getVersion = function() {
+            console.log("getVersion()");
+            return messagePromise({
+                type: "VERSION"
+            });
+        };
+    };
+})();</script><link rel="preconnect" href="https://fonts.googleapis.com/" crossorigin="use-credentials"><link rel="preconnect" href="https://fonts.gstatic.com/"><link rel="stylesheet" href="./index_files/css2"></head>
+
+<body>
+
+<h1>Anki flashcards</h1>
+
+<p>Anki on programm, mõeldud õppimise aitamiseks. Anki on flashcards done right. See on nagu quizlet, ainult ilma peavalu sisselogimise ja maksmisega. Anki võimaldab palju enamat kui Quizlet. Sellele on ka väga palju lisasid!</p>
+<br>
+<div class="container"> 
+    <div class="left-column">
+        <h2> Funktsionaalsus </h2>
+
+        <ol>
+            <li> Kaardid </li>
+            <li> Statistika
+                <ol>
+                    <li>Päeva tulemused</li>
+                    <li>Aja kulu </li>
+                    <li>Graafikud tulemustest</li>    
+                </ol>
+                </li>
+            <li> Kordamine intervallidega </li>
+        </ol>
+    
+    <table>
+        <tr>
+            <th>Funktsionaalsus</th>
+            <th>Anki</th>
+            <th>Quizlet</th>
+        </tr>
+
+        <tr>
+            <td class="header">Maksab</td>
+            <td>❌</td>
+            <td>✅*</td>
+        </tr>
+
+        <tr>
+            <td class="header">Reklaam</td>
+            <td> ❌</td>
+            <td> ✅</td>
+        </tr>
+    </table>
+    </div>
+
+    <div class="right-column">
+        <img src="https://lingopie.com/blog/content/images/size/w1200/2021/09/Blog-Header-Images-1.png" alt="Pilt flashkaartidest! *mitte Anki programmist*" style="display: block; max-width: 100%; height: auto; border: 2px solid rgb(255, 0, 0); box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);">
+        <br>
+        <br>
+        <a href="https://apps.ankiweb.net/" target="_blank">Lisa informatsiooni leiad siit!</a>
+    </div>
+</div>
+</body></html>
